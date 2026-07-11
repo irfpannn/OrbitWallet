@@ -14,7 +14,7 @@ const Scanner = dynamic(() => import('@/components/Scanner'), {
   loading: () => (
     <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 text-white">
       <div className="flex flex-col items-center gap-3">
-        <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
         <p className="text-sm font-medium">Opening camera module...</p>
       </div>
     </div>
@@ -34,8 +34,8 @@ export default function AddCard() {
   const [accountNumber, setAccountNumber] = useState('');
 
   // Custom theme colors
-  const [customStart, setCustomStart] = useState('#6366f1');
-  const [customEnd, setCustomEnd] = useState('#a855f7');
+  const [customStart, setCustomStart] = useState('#064e3b');
+  const [customEnd, setCustomEnd] = useState('#000000');
 
   // UI state
   const [showScanner, setShowScanner] = useState(false);
@@ -107,7 +107,7 @@ export default function AddCard() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans pb-16">
+    <div className="min-h-screen bg-black text-zinc-100 font-sans pb-16">
       <div className="max-w-md mx-auto px-4 pt-8">
         
         {/* Header */}
@@ -134,7 +134,7 @@ export default function AddCard() {
               placeholder="e.g. Starbucks, Tesco, Gym Card"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-xl text-sm focus:outline-none focus:border-indigo-500 transition-all text-white placeholder-zinc-600"
+              className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-xl text-sm focus:outline-none focus:border-emerald-500 transition-all text-white placeholder-zinc-600"
             />
           </div>
 
@@ -148,12 +148,12 @@ export default function AddCard() {
                 placeholder="Enter numbers or letters"
                 value={cardNumber}
                 onChange={(e) => setCardNumber(e.target.value)}
-                className="flex-1 min-w-0 px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-xl text-sm focus:outline-none focus:border-indigo-500 transition-all text-white font-mono tracking-wider placeholder-zinc-600"
+                className="flex-1 min-w-0 px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-xl text-sm focus:outline-none focus:border-emerald-500 transition-all text-white font-mono tracking-wider placeholder-zinc-600"
               />
               <button
                 type="button"
                 onClick={() => setShowScanner(true)}
-                className="px-3.5 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl flex items-center justify-center gap-1 transition-colors active:scale-95 text-xs font-semibold shrink-0"
+                className="px-3.5 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl flex items-center justify-center gap-1 transition-colors active:scale-95 text-xs font-semibold shrink-0"
               >
                 <Camera className="w-4 h-4" /> Camera
               </button>
@@ -171,7 +171,7 @@ export default function AddCard() {
               </label>
             </div>
             {isScanningGallery && (
-              <p className="text-[10px] text-indigo-400 mt-1 animate-pulse">Scanning image file...</p>
+              <p className="text-[10px] text-emerald-400 mt-1 animate-pulse">Scanning image file...</p>
             )}
             {galleryError && (
               <p className="text-[10px] text-red-400 mt-1">{galleryError}</p>
@@ -188,7 +188,7 @@ export default function AddCard() {
                 placeholder="e.g. Mobile number, NRIC, or Account No."
                 value={accountNumber}
                 onChange={(e) => setAccountNumber(e.target.value)}
-                className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-xl text-sm focus:outline-none focus:border-indigo-500 transition-all text-white placeholder-zinc-600 font-mono"
+                className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-xl text-sm focus:outline-none focus:border-emerald-500 transition-all text-white placeholder-zinc-600 font-mono"
               />
               <p className="text-[10px] text-zinc-500 leading-normal">
                 This ID displays on the card instead of the long encrypted DuitNow QR data string.
@@ -202,7 +202,7 @@ export default function AddCard() {
             <select
               value={format}
               onChange={(e) => setFormat(e.target.value as any)}
-              className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-xl text-sm focus:outline-none focus:border-indigo-500 transition-all text-white"
+              className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-xl text-sm focus:outline-none focus:border-emerald-500 transition-all text-white"
             >
               <option value="code128">Barcode (Code-128)</option>
               <option value="ean13">Barcode (EAN-13)</option>
@@ -227,7 +227,7 @@ export default function AddCard() {
                   }}
                   className={`p-3 text-center rounded-xl text-xs font-semibold border transition-all ${
                     category === cat.id
-                      ? 'bg-zinc-800 border-indigo-500 text-white font-bold'
+                      ? 'bg-zinc-800 border-emerald-500 text-white font-bold'
                       : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:bg-zinc-800'
                   }`}
                 >
@@ -247,7 +247,7 @@ export default function AddCard() {
                   type="button"
                   onClick={() => setColor(preset.name)}
                   className={`h-11 rounded-xl bg-gradient-to-br ${preset.value} flex items-center justify-center transition-all ${
-                    color === preset.name ? 'ring-2 ring-indigo-400 scale-95 border-none' : 'border border-white/5 opacity-80 hover:opacity-100'
+                    color === preset.name ? 'ring-2 ring-emerald-400 scale-95 border-none' : 'border border-white/5 opacity-80 hover:opacity-100'
                   }`}
                   title={preset.name}
                 >
@@ -260,7 +260,7 @@ export default function AddCard() {
                 type="button"
                 onClick={() => setColor(`${customStart},${customEnd}`)}
                 className={`h-11 rounded-xl flex items-center justify-center transition-all relative overflow-hidden ${
-                  color.includes(',') ? 'ring-2 ring-indigo-400 scale-95 border-none' : 'border border-zinc-800 bg-zinc-900/60 opacity-80 hover:opacity-100'
+                  color.includes(',') ? 'ring-2 ring-emerald-400 scale-95 border-none' : 'border border-zinc-800 bg-zinc-900/60 opacity-80 hover:opacity-100'
                 }`}
                 style={{ background: `linear-gradient(135deg, ${customStart}, ${customEnd})` }}
               >
@@ -311,14 +311,14 @@ export default function AddCard() {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={2}
-              className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-xl text-sm focus:outline-none focus:border-indigo-500 transition-all text-white placeholder-zinc-600 resize-none"
+              className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-xl text-sm focus:outline-none focus:border-emerald-500 transition-all text-white placeholder-zinc-600 resize-none"
             />
           </div>
 
           {/* Submit */}
           <button
             type="submit"
-            className="w-full mt-4 py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-bold shadow-[0_4px_20px_rgba(99,102,241,0.25)] transition-all active:scale-[0.99]"
+            className="w-full mt-4 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-sm font-bold shadow-[0_4px_20px_rgba(16,185,129,0.25)] transition-all active:scale-[0.99]"
           >
             Create Membership Card
           </button>

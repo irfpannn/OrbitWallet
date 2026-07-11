@@ -14,7 +14,7 @@ const STORAGE_KEY = 'orbit-wallet-cards';
 
 export const COLOR_PRESETS = [
   { name: 'Sunset Glow', value: 'from-orange-500 to-rose-500 text-white' },
-  { name: 'Ocean Depth', value: 'from-blue-600 to-indigo-800 text-white' },
+  { name: 'Emerald Pitch', value: 'from-emerald-900 to-black text-white border border-emerald-950/50' },
   { name: 'Forest Emerald', value: 'from-emerald-500 to-teal-700 text-white' },
   { name: 'Cosmic Purple', value: 'from-purple-600 to-pink-600 text-white' },
   { name: 'Dark Obsidian', value: 'from-zinc-800 to-zinc-950 text-white border border-zinc-700' },

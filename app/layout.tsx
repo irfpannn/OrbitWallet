@@ -1,26 +1,34 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import type { Metadata, Viewport } from 'next';
+import { Geist, Geist_Mono } from 'next/font/google';
+import './globals.css';
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-  title: "AdaMember - Membership & Loyalty Wallet",
-  description: "Offline-first PWA to store, scan and easily present membership barcodes and QR codes.",
-  manifest: "/manifest.json",
+  title: 'AdaMember? - Membership & Loyalty Wallet',
+  description:
+    'Offline-first PWA to store, scan and easily present membership barcodes and QR codes.',
+  manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
-    title: "AdaMember",
+    statusBarStyle: 'default',
+    title: 'AdaMember?',
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#064e3b',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({
@@ -30,14 +38,13 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
+      lang='en'
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <head>
-        <meta name="theme-color" content="#4f46e5" />
-        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+        <meta name='theme-color' content='#064e3b' />
+        <link rel='apple-touch-icon' href='/icons/icon-192x192.png' />
       </head>
-      <body className="min-h-full flex flex-col bg-zinc-950 text-zinc-100">
+      <body className='min-h-full flex flex-col bg-black text-zinc-100'>
         {children}
         <script
           dangerouslySetInnerHTML={{
@@ -50,11 +57,10 @@ export default function RootLayout({
                   );
                 });
               }
-            `
+            `,
           }}
         />
       </body>
     </html>
   );
 }
-
