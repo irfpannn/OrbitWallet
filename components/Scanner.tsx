@@ -84,6 +84,7 @@ export default function Scanner({ onScanSuccess, onClose }: ScannerProps) {
                 video: 'w-full h-full object-cover',
               }}
               sound={false}
+              startTimeoutMs={10000}
               components={{
                 finder: false,
               }}
