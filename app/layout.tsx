@@ -13,13 +13,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "OrbitWallet - Membership & Loyalty Wallet",
+  title: "AdaMember - Membership & Loyalty Wallet",
   description: "Offline-first PWA to store, scan and easily present membership barcodes and QR codes.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "OrbitWallet",
+    title: "AdaMember",
   },
 };
 

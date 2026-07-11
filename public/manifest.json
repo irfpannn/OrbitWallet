@@ -1,6 +1,6 @@
 {
-  "name": "OrbitWallet",
-  "short_name": "OrbitWallet",
+  "name": "AdaMember",
+  "short_name": "AdaMember",
   "description": "Your centralized membership, loyalty, and club card wallet.",
   "start_url": "/",
   "display": "standalone",
