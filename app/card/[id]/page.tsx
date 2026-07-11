@@ -3,11 +3,26 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { getCardById, updateCard, deleteCard, MembershipCard, COLOR_PRESETS, CATEGORY_PRESETS } from '@/utils/storage';
 import CardWidget from '@/components/CardWidget';
 import Barcode from '@/components/Barcode';
 import QrCode from '@/components/QrCode';
-import { ArrowLeft, Trash2, Edit, Sun, Moon, Check, X, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Trash2, Edit, Sun, Check, X, AlertTriangle, Camera, Image as GalleryIcon } from 'lucide-react';
+import { Html5Qrcode } from 'html5-qrcode';
+
+// Dynamically import Scanner to prevent SSR loading issues
+const Scanner = dynamic(() => import('@/components/Scanner'), {
+  ssr: false,
+  loading: () => (
+    <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 text-white">
+      <div className="flex flex-col items-center gap-3">
+        <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+        <p className="text-sm font-medium">Opening camera module...</p>
+      </div>
+    </div>
+  ),
+});
 
 export default function CardDetail() {
   const params = useParams();
@@ -33,6 +48,9 @@ export default function CardDetail() {
   // UI modes
   const [brightMode, setBrightMode] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showScanner, setShowScanner] = useState(false);
+  const [isScanningGallery, setIsScanningGallery] = useState(false);
+  const [galleryError, setGalleryError] = useState<string | null>(null);
 
   useEffect(() => {
     const found = getCardById(id);
@@ -81,6 +99,46 @@ export default function CardDetail() {
     setCustomStart(start);
     setCustomEnd(end);
     setEditColor(`${start},${end}`);
+  };
+
+  const handleScanSuccess = (decodedText: string, detectedFormat: 'qr' | 'code128' | 'ean13' | 'ean8' | 'upca' | 'code39') => {
+    setEditCardNumber(decodedText);
+    setEditFormat(detectedFormat);
+    setShowScanner(false);
+  };
+
+  const handleGalleryScan = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsScanningGallery(true);
+    setGalleryError(null);
+
+    try {
+      const html5QrCode = new Html5Qrcode('hidden-gallery-scanner-edit');
+      const decodedText = await html5QrCode.scanFile(file, false);
+      
+      setEditCardNumber(decodedText);
+
+      // Auto-detect code format
+      if (/^[0-9]{13}$/.test(decodedText)) {
+        setEditFormat('ean13');
+      } else if (/^[0-9]{8}$/.test(decodedText)) {
+        setEditFormat('ean8');
+      } else if (/^[0-9]{12}$/.test(decodedText)) {
+        setEditFormat('upca');
+      } else if (decodedText.startsWith('http') || decodedText.length > 25) {
+        setEditFormat('qr');
+      } else {
+        setEditFormat('code128');
+      }
+
+      setIsScanningGallery(false);
+    } catch (err) {
+      console.error('Gallery scanning error:', err);
+      setGalleryError('No valid barcode or QR code found in this image.');
+      setIsScanningGallery(false);
+    }
   };
 
   const handleSave = (e: React.FormEvent) => {
@@ -180,13 +238,40 @@ export default function CardDetail() {
 
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-semibold uppercase text-zinc-500">Card Number / Code</label>
-              <input
-                type="text"
-                required
-                value={editCardNumber}
-                onChange={(e) => setEditCardNumber(e.target.value)}
-                className="w-full px-4 py-3 bg-zinc-900 text-white border border-zinc-800 rounded-xl text-sm font-mono tracking-wider"
-              />
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  required
+                  value={editCardNumber}
+                  onChange={(e) => setEditCardNumber(e.target.value)}
+                  className="flex-1 min-w-0 px-4 py-3 bg-zinc-900 text-white border border-zinc-800 rounded-xl text-sm font-mono tracking-wider"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowScanner(true)}
+                  className="px-3 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl flex items-center justify-center gap-1.5 transition-colors active:scale-95 text-xs font-semibold shrink-0"
+                >
+                  <Camera className="w-4 h-4" /> Camera
+                </button>
+                <label
+                  className="px-3 py-3 bg-zinc-850 hover:bg-zinc-800 text-zinc-300 rounded-xl flex items-center justify-center gap-1.5 transition-colors active:scale-95 text-xs font-semibold shrink-0 cursor-pointer border border-zinc-800"
+                >
+                  <GalleryIcon className="w-4 h-4" /> Gallery
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleGalleryScan}
+                    className="hidden"
+                    disabled={isScanningGallery}
+                  />
+                </label>
+              </div>
+              {isScanningGallery && (
+                <p className="text-[10px] text-indigo-400 mt-1 animate-pulse">Scanning image file...</p>
+              )}
+              {galleryError && (
+                <p className="text-[10px] text-red-400 mt-1">{galleryError}</p>
+              )}
             </div>
 
             <div className="flex flex-col gap-1.5">
@@ -415,6 +500,17 @@ export default function CardDetail() {
           </div>
         </div>
       )}
+
+      {/* Camera Scanner View */}
+      {showScanner && (
+        <Scanner
+          onScanSuccess={handleScanSuccess}
+          onClose={() => setShowScanner(false)}
+        />
+      )}
+
+      {/* Hidden Container for Gallery scanning */}
+      <div id="hidden-gallery-scanner-edit" className="hidden" style={{ display: 'none' }} />
 
     </div>
   );

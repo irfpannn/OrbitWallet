@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { addCard, COLOR_PRESETS, CATEGORY_PRESETS } from '@/utils/storage';
-import { ArrowLeft, Camera, Check } from 'lucide-react';
+import { ArrowLeft, Camera, Check, Image as GalleryIcon } from 'lucide-react';
+import { Html5Qrcode } from 'html5-qrcode';
 
 // Dynamically import Scanner to prevent SSR loading issues
 const Scanner = dynamic(() => import('@/components/Scanner'), {
@@ -37,11 +38,47 @@ export default function AddCard() {
 
   // UI state
   const [showScanner, setShowScanner] = useState(false);
+  const [isScanningGallery, setIsScanningGallery] = useState(false);
+  const [galleryError, setGalleryError] = useState<string | null>(null);
 
   const handleScanSuccess = (decodedText: string, detectedFormat: 'qr' | 'code128' | 'ean13' | 'ean8' | 'upca' | 'code39') => {
     setCardNumber(decodedText);
     setFormat(detectedFormat);
     setShowScanner(false);
+  };
+
+  const handleGalleryScan = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsScanningGallery(true);
+    setGalleryError(null);
+
+    try {
+      const html5QrCode = new Html5Qrcode('hidden-gallery-scanner');
+      const decodedText = await html5QrCode.scanFile(file, false);
+      
+      setCardNumber(decodedText);
+
+      // Auto-detect code format
+      if (/^[0-9]{13}$/.test(decodedText)) {
+        setFormat('ean13');
+      } else if (/^[0-9]{8}$/.test(decodedText)) {
+        setFormat('ean8');
+      } else if (/^[0-9]{12}$/.test(decodedText)) {
+        setFormat('upca');
+      } else if (decodedText.startsWith('http') || decodedText.length > 25) {
+        setFormat('qr');
+      } else {
+        setFormat('code128');
+      }
+
+      setIsScanningGallery(false);
+    } catch (err) {
+      console.error('Gallery scanning error:', err);
+      setGalleryError('No valid barcode or QR code found in this image.');
+      setIsScanningGallery(false);
+    }
   };
 
   const handleCustomColorChange = (start: string, end: string) => {
@@ -109,16 +146,34 @@ export default function AddCard() {
                 placeholder="Enter numbers or letters"
                 value={cardNumber}
                 onChange={(e) => setCardNumber(e.target.value)}
-                className="flex-1 px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-xl text-sm focus:outline-none focus:border-indigo-500 transition-all text-white font-mono tracking-wider placeholder-zinc-600"
+                className="flex-1 min-w-0 px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-xl text-sm focus:outline-none focus:border-indigo-500 transition-all text-white font-mono tracking-wider placeholder-zinc-600"
               />
               <button
                 type="button"
                 onClick={() => setShowScanner(true)}
-                className="px-4 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl flex items-center justify-center gap-1.5 transition-colors active:scale-95 text-xs font-semibold shrink-0"
+                className="px-3.5 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl flex items-center justify-center gap-1 transition-colors active:scale-95 text-xs font-semibold shrink-0"
               >
-                <Camera className="w-4 h-4" /> Scan
+                <Camera className="w-4 h-4" /> Camera
               </button>
+              <label
+                className="px-3.5 py-3 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl flex items-center justify-center gap-1 transition-colors active:scale-95 text-xs font-semibold shrink-0 cursor-pointer border border-zinc-700/50"
+              >
+                <GalleryIcon className="w-4 h-4" /> Gallery
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleGalleryScan}
+                  className="hidden"
+                  disabled={isScanningGallery}
+                />
+              </label>
             </div>
+            {isScanningGallery && (
+              <p className="text-[10px] text-indigo-400 mt-1 animate-pulse">Scanning image file...</p>
+            )}
+            {galleryError && (
+              <p className="text-[10px] text-red-400 mt-1">{galleryError}</p>
+            )}
           </div>
 
           {/* Code Format */}
@@ -254,6 +309,9 @@ export default function AddCard() {
             onClose={() => setShowScanner(false)}
           />
         )}
+
+        {/* Hidden Container for Gallery scanning */}
+        <div id="hidden-gallery-scanner" className="hidden" style={{ display: 'none' }} />
 
       </div>
     </div>

@@ -38,6 +38,15 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
   if (url.origin !== self.location.origin) return;
 
+  // Bypass Next.js hot module replacement (HMR) and dev server updates
+  if (
+    url.pathname.startsWith('/_next/webpack-hmr') ||
+    url.pathname.includes('hot-update') ||
+    url.pathname.includes('webpack')
+  ) {
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
