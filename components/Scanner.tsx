@@ -83,8 +83,9 @@ export default function Scanner({ onScanSuccess, onClose }: ScannerProps) {
                 container: 'w-full h-full object-cover',
                 video: 'w-full h-full object-cover',
               }}
+              sound={false}
               components={{
-                audio: false,
+                finder: false,
               }}
             />
             {/* Modern Scanning overlay target border */}
