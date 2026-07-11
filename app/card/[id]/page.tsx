@@ -40,6 +40,7 @@ export default function CardDetail() {
   const [editColor, setEditColor] = useState('');
   const [editCategory, setEditCategory] = useState('');
   const [editNotes, setEditNotes] = useState('');
+  const [editAccountNumber, setEditAccountNumber] = useState('');
 
   // Custom colors for theme picker
   const [customStart, setCustomStart] = useState('#6366f1');
@@ -63,6 +64,7 @@ export default function CardDetail() {
       setEditColor(found.color);
       setEditCategory(found.category);
       setEditNotes(found.notes || '');
+      setEditAccountNumber(found.accountNumber || '');
       
       // Parse custom colors if present
       if (found.color.includes(',')) {
@@ -152,6 +154,7 @@ export default function CardDetail() {
       color: editColor,
       category: editCategory,
       notes: editNotes.trim() || undefined,
+      accountNumber: editCategory === 'duitnow' ? (editAccountNumber.trim() || undefined) : undefined,
     });
 
     // Refresh view
@@ -274,6 +277,24 @@ export default function CardDetail() {
               )}
             </div>
 
+            {/* DuitNow Account Display Info */}
+            {editCategory === 'duitnow' && (
+              <div className="flex flex-col gap-1.5 animate-in fade-in duration-200">
+                <label className="text-xs font-semibold uppercase text-zinc-550">DuitNow ID (for display)</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Mobile number, NRIC, or Account No."
+                  value={editAccountNumber}
+                  onChange={(e) => setEditAccountNumber(e.target.value)}
+                  className="w-full px-4 py-3 bg-zinc-900 text-white border border-zinc-800 rounded-xl text-sm font-mono"
+                />
+                <p className="text-[10px] text-zinc-500 leading-normal">
+                  This ID displays on the card instead of the long DuitNow QR data string.
+                </p>
+              </div>
+            )}
+
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-semibold uppercase text-zinc-500">Code Format</label>
               <select
@@ -297,7 +318,10 @@ export default function CardDetail() {
                   <button
                     key={cat.id}
                     type="button"
-                    onClick={() => setEditCategory(cat.id)}
+                    onClick={() => {
+                      setEditCategory(cat.id);
+                      if (cat.id === 'duitnow') setEditFormat('qr');
+                    }}
                     className={`p-3 text-center rounded-xl text-xs font-semibold border transition-all ${
                       editCategory === cat.id
                         ? 'bg-zinc-800 border-indigo-500 text-white'
@@ -453,10 +477,10 @@ export default function CardDetail() {
 
               <div className="text-center">
                 <p className="font-mono text-lg font-bold tracking-widest select-all">
-                  {card.cardNumber}
+                  {card.category === 'duitnow' ? (card.accountNumber || card.cardNumber) : card.cardNumber}
                 </p>
                 <p className="text-[10px] uppercase text-zinc-500 mt-1">
-                  Format: {card.format === 'qr' ? 'QR Code' : card.format.toUpperCase()}
+                  {card.category === 'duitnow' ? 'DuitNow ID' : `Format: ${card.format === 'qr' ? 'QR Code' : card.format.toUpperCase()}`}
                 </p>
               </div>
             </div>

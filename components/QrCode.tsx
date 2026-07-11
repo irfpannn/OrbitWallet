@@ -14,7 +14,7 @@ export default function QrCode({ value, size = 180 }: QrCodeProps) {
       <QRCodeSVG
         value={value}
         size={size}
-        level="H" // High error correction level for reliable scanner detection
+        level="M" // Medium error correction level for standard density
         includeMargin={true}
       />
     </div>

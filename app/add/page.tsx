@@ -31,6 +31,7 @@ export default function AddCard() {
   const [color, setColor] = useState(COLOR_PRESETS[0].name);
   const [category, setCategory] = useState(CATEGORY_PRESETS[0].id);
   const [notes, setNotes] = useState('');
+  const [accountNumber, setAccountNumber] = useState('');
 
   // Custom theme colors
   const [customStart, setCustomStart] = useState('#6366f1');
@@ -99,6 +100,7 @@ export default function AddCard() {
       color,
       category,
       notes: notes.trim() || undefined,
+      accountNumber: category === 'duitnow' ? (accountNumber.trim() || undefined) : undefined,
     });
 
     router.push('/');
@@ -176,6 +178,24 @@ export default function AddCard() {
             )}
           </div>
 
+          {/* DuitNow Account Display Info */}
+          {category === 'duitnow' && (
+            <div className="flex flex-col gap-2 animate-in fade-in duration-200">
+              <label className="text-xs font-bold tracking-wider text-zinc-450 uppercase">DuitNow ID (for display)</label>
+              <input
+                type="text"
+                required
+                placeholder="e.g. Mobile number, NRIC, or Account No."
+                value={accountNumber}
+                onChange={(e) => setAccountNumber(e.target.value)}
+                className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-xl text-sm focus:outline-none focus:border-indigo-500 transition-all text-white placeholder-zinc-600 font-mono"
+              />
+              <p className="text-[10px] text-zinc-500 leading-normal">
+                This ID displays on the card instead of the long encrypted DuitNow QR data string.
+              </p>
+            </div>
+          )}
+
           {/* Code Format */}
           <div className="flex flex-col gap-2">
             <label className="text-xs font-bold tracking-wider text-zinc-400 uppercase">Code Format</label>
@@ -201,7 +221,10 @@ export default function AddCard() {
                 <button
                   key={cat.id}
                   type="button"
-                  onClick={() => setCategory(cat.id)}
+                  onClick={() => {
+                    setCategory(cat.id);
+                    if (cat.id === 'duitnow') setFormat('qr');
+                  }}
                   className={`p-3 text-center rounded-xl text-xs font-semibold border transition-all ${
                     category === cat.id
                       ? 'bg-zinc-800 border-indigo-500 text-white font-bold'

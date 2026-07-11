@@ -7,6 +7,7 @@ export interface MembershipCard {
   category: string;
   notes?: string;
   createdAt: string;
+  accountNumber?: string; // Display number for payment/duitnow cards
 }
 
 const STORAGE_KEY = 'orbit-wallet-cards';
@@ -25,6 +26,7 @@ export const CATEGORY_PRESETS = [
   { id: 'food', label: 'Food & Beverage' },
   { id: 'travel', label: 'Travel & Transport' },
   { id: 'entertainment', label: 'Entertainment' },
+  { id: 'duitnow', label: 'DuitNow QR' },
   { id: 'other', label: 'Others' }
 ];
 

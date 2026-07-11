@@ -98,12 +98,14 @@ export default function Home() {
 
         {/* Cards list */}
         {loading ? (
-          <div className="flex flex-col gap-4">
-            <div className="w-full aspect-[1.586/1] bg-zinc-900 animate-pulse rounded-2xl" />
-            <div className="w-full aspect-[1.586/1] bg-zinc-900 animate-pulse rounded-2xl" />
+          <div className="grid grid-cols-2 gap-3.5 animate-pulse">
+            <div className="w-full aspect-[1.586/1] bg-zinc-900/60 rounded-xl" />
+            <div className="w-full aspect-[1.586/1] bg-zinc-900/60 rounded-xl" />
+            <div className="w-full aspect-[1.586/1] bg-zinc-900/60 rounded-xl" />
+            <div className="w-full aspect-[1.586/1] bg-zinc-900/60 rounded-xl" />
           </div>
         ) : filteredCards.length > 0 ? (
-          <div className="flex flex-col gap-5">
+          <div className="grid grid-cols-2 gap-3.5">
             {filteredCards.map((card) => (
               <Link key={card.id} href={`/card/${card.id}`}>
                 <CardWidget card={card} />
